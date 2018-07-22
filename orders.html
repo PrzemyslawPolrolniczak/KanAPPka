@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <title>Zamówienia</title>
+    <style>
+    .card {
+        margin: 2rem 1rem;
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="jumbotron">
+            <h1 class="display-4">
+                {{title}}
+            </h1>
+        <button class="btn btn-primary" @click="getOrders">Ściągnij zamówienia</button>
+        </div>
+        <div v-for="(order, index) in orders" :key="index" class="card">
+            <div class="card-header">
+                {{order[index].imie}}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title" v-for="koszyk in order[index].koszyk" :key="koszyk.id">{{koszyk.ammount}} x {{koszyk.name}}</h5>
+                <p class="card-text">{{order[index].uwagi}}</p>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            title:'ZAMÓWIENIA',
+            orders: [],
+            isFetch: false
+        },
+        methods: {
+            getOrders() {
+                this.isFetch = true;
+                fetch('orders/get', {
+                    method: 'GET'
+                })
+                .catch(error => console.error('Error: ', error))
+                .then(response => {
+                    response.json().then(data => {
+                        console.log(data);
+                        this.orders.push(data);
+                    })
+                })
+            }
+        }
+    })
+</script>
+</html>
